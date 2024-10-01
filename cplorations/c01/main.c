@@ -39,9 +39,21 @@ int add(int n)
  *
  * returns: Nth Fibonacci number
  */
-int fib(int n)
-{
-    /** Your CODE here **/
+int fib(int n){
+	if(n == 0){ return 0;}
+	if(n == 1){ return 1;}
+
+	int total = 0;
+	int num_minus_one = 1;
+	int num_minus_two = 0;
+
+	for(int i = 2; i <=n; i++){
+	total = num_minus_one + num_minus_two;
+	num_minus_two = num_minus_one;
+	num_minus_one = total;
+	}
+
+	return total;
 }
  
  
@@ -97,9 +109,12 @@ int sum(int arr[], int n)
  * n: number of terms to use in Leibiz formula
  */
 double pie(long int n){
-    long int quarterPI = 1;
+    double quarterPI = 0.0;
     for(long int i = 0; i < n; i++){
+	quarterPI += (pow(-1,i)) / (2.0 * i + 1);
     }
+
+    return quarterPI * 4;
 } 
 
 
