@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 /* Function: add
  * -------------
@@ -69,7 +70,7 @@ int fib(int n){
  */
 int max(int arr[], int n)
 {
-	int max = 0;
+	int max = INT_MIN;
 	for(int i = 0; i < n; i++){
 	    if(arr[i] > max){
 	    max = arr[i];
