@@ -1,0 +1,27 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/PC.hdl
+/**
+ * A 16-bit counter.
+ * if      reset(t): out(t+1) = 0
+ * else if load(t):  out(t+1) = in(t)
+ * else if inc(t):   out(t+1) = out(t) + 1
+ * else              out(t+1) = out(t)
+ */
+CHIP PC {
+    IN in[16], reset, load, inc;
+    OUT out[16];
+    
+    PARTS:
+    Inc16(in= feedback, out= ProgramCounter);
+
+    //Mux between value from previous tick or incremented
+    Mux16(a = feedback, b = ProgramCounter, sel = inc, out = MUXout0);
+    //Mux between (previous value or incremented) or input
+    Mux16(a = MUXout0, b = in, sel = load, out = MUXout1);
+    //Mux between our final value or zero the register out
+    Mux16(a = MUXout1, b = false, sel = reset, out = cout);
+    //Have to bifurcate the out for feedback loop
+    Register(in = cout, load = true, out = out, out = feedback);
+}
