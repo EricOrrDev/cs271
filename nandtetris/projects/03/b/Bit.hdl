@@ -15,10 +15,7 @@ CHIP Bit {
     PARTS:
     Mux(a=DFFout, b=in, sel=load, out=MUXout);
 
-    // DFF to store the bit value
-    DFF(in=MUXout, out=DFFout);
-
     // Output the current value stored in the DFF
-    DFF(in=MUXout, out=out);
+    DFF(in=MUXout, out=out, out = DFFout);
     
 }
