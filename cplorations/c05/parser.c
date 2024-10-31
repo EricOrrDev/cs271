@@ -60,8 +60,7 @@ void parse(FILE * file){
         if(is_Ctype(line)){
             inst_type = 'C';
         }
-
-        printf("%c  %s\n",inst_type, line);
+        printf("%c %s\n",inst_type, line);
     }
 }
 
