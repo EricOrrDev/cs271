@@ -47,25 +47,29 @@ char *strip(char *s){
 void parse(FILE * file){
 	
     char line[MAX_LINE_LENGTH] = {0};
+    unsigned int line_number = 0;
 
     while (fgets(line, sizeof(line), file)){
-        char inst_type;
+        //char inst_type;
         strip(line);
         if(!*line){
             continue;
         }
+
         
         if(is_label(line)){
-            inst_type = 'L';
+            //inst_type = 'L';
             char label[MAX_LABEL_LENGTH];
             extract_label(line, label);
             strcpy(line, label);
+            symtable_insert(line,line_number) ;
         } else if(is_Atype(line)){
-            inst_type = 'A';
+            //inst_type = 'A';
         } else if(is_Ctype(line)){
-            inst_type = 'C';
+           //inst_type = 'C';
         }
-        printf("%c  %s\n",inst_type, line);
+        //printf("%c  %s\n",inst_type, line);
+        line_number++;
     }
 }
 
@@ -101,8 +105,9 @@ char* extract_label(const char* line, char* label){
         i++;
     }
 
-    strncpy(label,line+1,i-1);
-    label[i-1] = '\0';
-    return label;
+    strncpy(label,line,i);
+    label[i] = '\0';
+   return label;
 }
+
 
