@@ -7,7 +7,9 @@
 typedef int16_t hack_addr;
 
 struct Symbol{
+    //key
     char* name;
+    //data
     hack_addr address;
 };
 

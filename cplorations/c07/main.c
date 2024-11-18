@@ -23,8 +23,8 @@ int main(int argc, const char *argv[])
     }
     
     parse(fin);
-   // symtable_print_labels();
-    symtable_display_table();
+    symtable_print_labels();
+    //symtable_display_table();
     fclose(fin);
 }
 

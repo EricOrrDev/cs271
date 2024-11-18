@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -ggdb -I. 
+CFLAGS = -Wall -I. 
 LDFLAGS = 
 OBJFILES = main.o parser.o symtable.o
 TARGET = main

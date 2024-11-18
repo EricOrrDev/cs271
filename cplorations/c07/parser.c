@@ -48,25 +48,28 @@ void parse(FILE * file){
 	
     char line[MAX_LINE_LENGTH] = {0};
     unsigned int line_number = 0;
+    unsigned int instruction_number = 0;
 
     while (fgets(line, sizeof(line), file)){
         //char inst_type;
         strip(line);
         if(!*line){
+            //jump to next line if empty after strip
             continue;
         }
-
         
         if(is_label(line)){
             //inst_type = 'L';
             char label[MAX_LABEL_LENGTH];
             extract_label(line, label);
             strcpy(line, label);
-            symtable_insert(line,line_number) ;
+            symtable_insert(line,instruction_number);
         } else if(is_Atype(line)){
             //inst_type = 'A';
+            instruction_number++;
         } else if(is_Ctype(line)){
            //inst_type = 'C';
+           instruction_number++;
         }
         //printf("%c  %s\n",inst_type, line);
         line_number++;
@@ -100,14 +103,14 @@ bool is_Ctype(const char* inputString){
 }
 
 char* extract_label(const char* line, char* label){
-    int i=1;
+    int i=0;
     while(line[i] != ')' && line[i] != '\0'){
         i++;
     }
 
-    strncpy(label,line,i);
-    label[i] = '\0';
-   return label;
+    strncpy(label,line+1,i-1);
+    label[i-1] = '\0';
+    return label;
 }
 
 

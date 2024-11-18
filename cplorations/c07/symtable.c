@@ -4,12 +4,12 @@ struct Symbol* hashArray[SYMBOL_TABLE_SIZE];
 
 //djb2 hash algo
 int hash(char* str){
-    int hash = 5381;
+    unsigned long hash = 5381;
     int c;
     
-    while ((c = (*str)++))
+    while ((c = *str++)){
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
+    }
     return hash % SYMBOL_TABLE_SIZE;
 }
 
@@ -24,7 +24,8 @@ void symtable_insert(char* key, hack_addr address){
     
     new_Symbol->name = strdup(key);
     new_Symbol->address = address;
-    while(hashArray[index] != NULL){
+
+    while(hashArray[index] != NULL && hashArray[index]->name != NULL){
        ++index;
        index %= SYMBOL_TABLE_SIZE; 
     }
@@ -45,7 +46,7 @@ struct Symbol* symtable_find(char* key){
 void symtable_display_table(){
     for(int i=0; i<SYMBOL_TABLE_SIZE; i++){
         if(hashArray[i]!= NULL){
-            printf(" {%s,%d}",hashArray[i]->name, hashArray[i]->address);
+            printf("{%s,%d}",hashArray[i]->name, hashArray[i]->address);
         }
         else {
             printf(" ~~ ");
