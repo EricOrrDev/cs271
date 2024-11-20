@@ -33,14 +33,12 @@ void symtable_insert(char* key, hack_addr address){
 }
 
 struct Symbol* symtable_find(char* key){
-    struct Symbol* found_symbol = NULL;
-    for(int i =0; i < SYMBOL_TABLE_SIZE; i++){
-        if(strcmp(key, hashArray[i]->name)){
-            found_symbol = hashArray[i];
-            break;
+    for(int i = 0; i < SYMBOL_TABLE_SIZE; i++){
+        if(hashArray[i] != NULL && strcmp(key, hashArray[i]->name) == 0){
+            return hashArray[i];
         }
     }
-    return found_symbol;
+    return NULL;
 }
 
 void symtable_display_table(){

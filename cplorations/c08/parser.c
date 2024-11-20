@@ -47,45 +47,48 @@ char *strip(char *s){
  *
  * returns: nothing
  */
-void parse(FILE * file){
-	
+void parse(FILE *file) {
     char line[MAX_LINE_LENGTH] = {0};
     unsigned int line_number = 0;
     unsigned int instruction_number = 0;
 
-    while (fgets(line, sizeof(line), file)){
-        if(instruction_number > MAX_INSTRUCTIONS){
-            exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS+1);
-        }
+    while (fgets(line, sizeof(line), file)) {
         char inst_type;
+        line_number++;
+        if (instruction_number > MAX_INSTRUCTIONS) {
+            exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
+        }
         strip(line);
-        if(!*line){
-            //jump to next line if empty after strip
+
+        if (!*line) {
+            //Skip empty lines after stripping.
             continue;
         }
-        
-        if(is_label(line)){
+
+        if (is_label(line)) {
             inst_type = 'L';
             char label[MAX_LABEL_LENGTH];
             extract_label(line, label);
-            if(!isalpha(label[0])){
-                exit_program(EXIT_INVALID_LABEL, line_number, line);
+
+            if (!isalpha(label[0])) {
+                exit_program(EXIT_INVALID_LABEL, line_number, label);
             }
-            if(symtable_find(label) != NULL){
-                exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_number, line);
+
+            if (symtable_find(label) != NULL) {
+                exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_number, label);
             }
-            strcpy(line, label);
-            symtable_insert(line,instruction_number);
+            symtable_insert(label, instruction_number);
             continue;
-        } else if(is_Atype(line)){
-            inst_type = 'A';
-            instruction_number++;
-        } else if(is_Ctype(line)){
-           inst_type = 'C';
-           instruction_number++;
         }
+
+        if (is_Atype(line)) {
+            inst_type = 'A';
+        } else if (is_Ctype(line)) {
+            inst_type = 'C';
+        }
+
         printf("%u: %c  %s\n", instruction_number, inst_type, line);
-        line_number++;
+        instruction_number++;
     }
 }
 
