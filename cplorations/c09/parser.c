@@ -141,25 +141,39 @@ void add_predefined_symbols(){
 
 bool parse_A_instruction(const char *line, a_instruction *instr){
     char* s = malloc(strlen(line)*sizeof(char));
-    //line == @R0
     strcpy(s, line+1);
-    //s == R0
+    
+    //check if a predefined symbol
+    for(int i = 0; i <NUM_PREDEFINED_SYMBOLS; i++){
+        //strcmp is so weird, why does 0 mean they match?
+        if(strcmp(s, predefined_symbols[i].name) == 0){
+            instr->is_addr = true;
+            instr->a_inst_data.address = predefined_symbols[i].address;
+            free(s);
+            return true;
+        }
+    }
+
     char* s_end = NULL;
     long result = strtol(s, &s_end,10);
 
     if(s == s_end){
-        //we have a valid string
+        //No numbers found, we have a valid string
         instr->is_addr = false;
-        instr->a_inst_data.label = malloc(strlen(line)*sizeof(char));
+        //sizeof char isnt needed cause a char is 1 byte, but I think its good practice to have it
+        instr->a_inst_data.label = malloc(strlen(s)*sizeof(char) + 1);
         strcpy(instr->a_inst_data.label, s);
     } else if(*s_end != 0){
-        //have the issue of R0 - R15 not being recognized as valid
+        //invalid instruction
+        free(s);
         return false;
     } else{
+        //number found
         instr->is_addr = true;
         instr->a_inst_data.address = result;
     }
-
+    
+    free(s);
     return true;
 }
 #endif
