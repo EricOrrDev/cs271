@@ -144,7 +144,7 @@ bool parse_A_instruction(const char *line, a_instruction *instr){
     strcpy(s, line+1);
     
     //check if a predefined symbol
-    for(int i = 0; i <NUM_PREDEFINED_SYMBOLS; i++){
+    for(int i = 0; i < NUM_PREDEFINED_SYMBOLS; i++){
         //strcmp is so weird, why does 0 mean they match?
         if(strcmp(s, predefined_symbols[i].name) == 0){
             instr->is_addr = true;

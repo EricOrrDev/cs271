@@ -45,14 +45,13 @@ char *strip(char *s){
  *
  * returns: nothing
  */
-void parse(FILE *file) {
+int parse(FILE *file, instruction* instructions) {
     char line[MAX_LINE_LENGTH] = {0};
     unsigned int line_number = 0;
     unsigned int instruction_number = 0;
     
     add_predefined_symbols(); 
     while (fgets(line, sizeof(line), file)) {
-        char inst_type;
         instruction instr;
         line_number++;
         if (instruction_number > MAX_INSTRUCTIONS) {
@@ -66,7 +65,6 @@ void parse(FILE *file) {
         }
 
         if (is_label(line)) {
-            inst_type = 'L';
             char label[MAX_LABEL_LENGTH];
             extract_label(line, label);
 
@@ -79,20 +77,44 @@ void parse(FILE *file) {
             }
             symtable_insert(label, instruction_number);
             continue;
-        }
-
-        if (is_Atype(line)) {
+        }else if (is_Atype(line)) {
             if(!parse_A_instruction(line, &instr.instr.a_instr)){
                 exit_program(EXIT_INVALID_A_INSTR, line_number, line);
             }
             instr.instr_type = A_Type_Instruction;
+
+            if(instr.instr.a_instr.is_addr){
+            //if address print the address
+            printf("A: %d\n", instr.instr.a_instr.a_inst_data.address);
+            } else {
+            //else print label
+            printf("A: %s\n", instr.instr.a_instr.a_inst_data.label);
+            }
         } else if (is_Ctype(line)) {
-            inst_type = 'C';
+            char tmp_line[MAX_LINE_LENGTH];
+            strcpy(tmp_line, line);
+            //printf("DEBUG: pushing string: %s into the parse_C function\n" , tmp_line);
+            parse_C_instruction(tmp_line, &instr.instr.c_instr);
+            instr.instr_type= C_Type_Instruction;
+            if(instr.instr.c_instr.jump == JMP_INVALID){
+                exit_program(EXIT_INVALID_C_JUMP, line_number, line);
+            }
+            if(instr.instr.c_instr.dest == DEST_INVALID){
+                exit_program(EXIT_INVALID_C_DEST, line_number, line);
+            }
+            if(instr.instr.c_instr.comp == COMP_INVALID){
+                exit_program(EXIT_INVALID_C_COMP, line_number, line);
+            }
+
+            int d = instr.instr.c_instr.dest;
+            int c = instr.instr.c_instr.comp;
+            int j = instr.instr.c_instr.jump;
+            printf("C: d=%d, c=%d, j=%d\n", d, c, j);
         }
 
-        //printf("%u: %c  %s\n", instruction_number, inst_type, line);
-        instruction_number++;
+        instructions[instruction_number++] = instr;
     }
+    return instruction_number;
 }
 
 bool is_Atype(const char* inputString){
@@ -147,8 +169,8 @@ bool parse_A_instruction(const char *line, a_instruction *instr){
     for(int i = 0; i <NUM_PREDEFINED_SYMBOLS; i++){
         //strcmp is so weird, why does 0 mean they match?
         if(strcmp(s, predefined_symbols[i].name) == 0){
-            instr->is_addr = true;
-            instr->a_inst_data.address = predefined_symbols[i].address;
+            instr->a_inst_data.label = predefined_symbols[i].name;
+            instr->is_addr = false;
             free(s);
             return true;
         }
@@ -158,7 +180,7 @@ bool parse_A_instruction(const char *line, a_instruction *instr){
     long result = strtol(s, &s_end,10);
 
     if(s == s_end){
-        //No numbers found, we have a valid string
+        //No numbers found, we have a valid string, meaning we have a label
         instr->is_addr = false;
         //sizeof char isnt needed cause a char is 1 byte, but I think its good practice to have it
         instr->a_inst_data.label = malloc(strlen(s)*sizeof(char) + 1);
@@ -168,7 +190,7 @@ bool parse_A_instruction(const char *line, a_instruction *instr){
         free(s);
         return false;
     } else{
-        //number found
+        //number found meaning we have an address 
         instr->is_addr = true;
         instr->a_inst_data.address = result;
     }
@@ -196,12 +218,22 @@ void parse_C_instruction(char* line, c_instruction *instr){
         comp = dest;
         dest = NULL;
     }
+
+    //printf("DEBUG: dest='%s', comp='%s', jump='%s'\n",
+    //    dest ? dest : "NULL",
+    //    comp ? comp : "NULL",
+    //    jump ? jump : "NULL");
     
     int a;
     instr->jump = jump ? str_to_jumpid(jump) : JMP_NULL;
     instr->dest = dest ? str_to_destid(dest) : DEST_NULL;
     instr->comp = str_to_compid(comp, &a);
     instr->a = a; //some bit-field issue, this gets around it
+    
+    //printf("DEBUG: Parsed C-instruction: dest=%d, comp=%d, jump=%d, a=%d\n",
+    //       instr->dest, instr->comp, instr->jump, instr->a);
 }
 
 #endif
+
+

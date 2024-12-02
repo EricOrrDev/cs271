@@ -57,7 +57,7 @@ typedef struct instruction {
 /** function prototypes **/
 char *strip(char *s);
 
-void parse(FILE * file);
+int parse(FILE * file, instruction* instructions);
 
 bool is_Atype(const char*);
 bool is_label(const char*);

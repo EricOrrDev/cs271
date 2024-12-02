@@ -2,6 +2,7 @@
 #define NUM_PREDEFINED_SYMBOLS 23
 
 #include <stdint.h>
+//#include <stdio.h> //for debugging
 #include <string.h>
 typedef enum{
     SYM_R0 = 0,
@@ -106,35 +107,35 @@ typedef enum {
     COMP_D_AND_A = 0,
     COMP_D_OR_A = 21,
     //a = 1
-    COMP_M = 112,
-    COMP_NOT_M = 113,
-    COMP_NEGATIVE_M = 115,
-    COMP_M_PLUS_1 = 119,
-    COMP_M_MINUS_1 = 114,
-    COMP_D_PLUS_M = 66,
-    COMP_D_MINUS_M = 83,
-    COMP_M_MINUS_D = 71,
-    COMP_D_AND_M = 64,
-    COMP_D_OR_M = 85
+    COMP_M = 48,
+    COMP_NOT_M = 49,
+    COMP_NEGATIVE_M = 51,
+    COMP_M_PLUS_1 = 55,
+    COMP_M_MINUS_1 = 50,
+    COMP_D_PLUS_M = 2,
+    COMP_D_MINUS_M = 19,
+    COMP_M_MINUS_D = 7,
+    COMP_D_AND_M = 0,
+    COMP_D_OR_M = 21 
 }comp_id;
 
 static inline jump_id str_to_jumpid(const char* s){
     jump_id id = JMP_INVALID;
     if(s == NULL){
         id = JMP_NULL;
-    } else if(strcmp(s, "JGT")){
+    } else if(strcmp(s, "JGT") == 0){
         id = JMP_JGT;
-    } else if(strcmp(s, "JEQ")){
+    } else if(strcmp(s, "JEQ") == 0){
         id = JMP_JEQ;
-    } else if(strcmp(s, "JGE")){
+    } else if(strcmp(s, "JGE") == 0){
         id = JMP_JGE;
-    } else if(strcmp(s, "JLT")){
+    } else if(strcmp(s, "JLT") == 0){
         id = JMP_JLT;
-    } else if(strcmp(s, "JNE")){
+    } else if(strcmp(s, "JNE") == 0){
         id = JMP_JNE;
-    } else if(strcmp(s, "JLE")){
+    } else if(strcmp(s, "JLE") == 0){
         id = JMP_JLE;
-    } else if(strcmp(s, "JMP")){
+    } else if(strcmp(s, "JMP") == 0){
         id = JMP_JMP;
     }
     return id;
@@ -142,87 +143,67 @@ static inline jump_id str_to_jumpid(const char* s){
 
 static inline dest_id str_to_destid(const char* s){
     dest_id id = DEST_INVALID;
-
     if(s == NULL){
         id = DEST_NULL;
-    } else if(strcmp(s, "M")){
+    } else if(strcmp(s, "M") == 0){
         id = DEST_M;
-    } else if(strcmp(s, "D")){
+    } else if(strcmp(s, "D") == 0){
         id = DEST_D;
-    } else if(strcmp(s, "MD")){
+    } else if(strcmp(s, "MD") == 0){
         id = DEST_MD; 
-    } else if(strcmp(s, "A")){
+    } else if(strcmp(s, "A") == 0){
         id = DEST_A;
-    } else if(strcmp(s, "AM")){
+    } else if(strcmp(s, "AM") == 0){
         id = DEST_AM;
-    } else if(strcmp(s, "AD")){
+    } else if(strcmp(s, "AD") == 0){
         id = DEST_AD;
-    } else if(strcmp(s, "AMD")){
+    } else if(strcmp(s, "AMD") == 0){
         id = DEST_AMD;
     }
     return id;
 }
 
-static inline comp_id str_to_compid(const char* s, int *a){
+static inline comp_id str_to_compid(const char* s, int *a) {
+    //printf("DEBUG: Processing comp string: '%s'\n", s);
+    *a = 0; // Default to 0 (A-based computation)
     comp_id id = COMP_INVALID;
-    if(strcmp(s, "0")){
-        id = COMP_0;
-    } else if(strcmp(s, "1")){
-        id = COMP_1;
-    } else if(strcmp(s, "-1")){
-        id = COMP_NEGATIVE_1;
-    } else if(strcmp(s, "D")){
-        id = COMP_D;
-    } else if(strcmp(s, "A")){
-        id = COMP_A;
-    } else if(strcmp(s, "!D")){
-        id = COMP_NOT_D;
-    } else if(strcmp(s, "!A")){
-        id = COMP_NOT_A;
-    } else if(strcmp(s, "-D")){
-        id = COMP_NEGATIVE_D;
-    } else if(strcmp(s, "-A")){
-        id = COMP_NEGATIVE_A;
-    } else if(strcmp(s, "D+1")){
-        id = COMP_D_PLUS_1;
-    } else if(strcmp(s, "A+1")){
-        id = COMP_A_PLUS_1;
-    } else if(strcmp(s, "D-1")){
-        id = COMP_D_MINUS_1;
-    } else if(strcmp(s, "A-1")){
-        id = COMP_A_MINUS_1;
-    } else if(strcmp(s, "D+A")){
-        id = COMP_D_PLUS_A;
-    } else if(strcmp(s, "D-A")){
-       id = COMP_D_MINUS_A; 
-    } else if(strcmp(s, "A-D")){
-       id = COMP_A_MINUS_D;
-    } else if(strcmp(s, "D&A")){
-        id = COMP_D_AND_A;
-    } else if(strcmp(s, "D|A")){
-        id = COMP_D_OR_A;
-    } else if(strcmp(s, "M")){
-        id = COMP_M;
-    } else if(strcmp(s, "!M")){
-        id = COMP_NOT_M;
-    } else if(strcmp(s, "-M")){
-        id = COMP_NEGATIVE_M;
-    } else if(strcmp(s, "M+1")){
-        id = COMP_M_PLUS_1;
-    } else if(strcmp(s, "M-1")){
-        id = COMP_M_MINUS_1;
-    } else if(strcmp(s, "D+M")){
-        id = COMP_D_PLUS_M;
-    } else if(strcmp(s, "D-M")){
-        id = COMP_D_MINUS_M;
-    } else if(strcmp(s, "M-D")){
-        id = COMP_M_MINUS_D;
-    } else if(strcmp(s, "D&M")){
-        id = COMP_D_AND_M;
-    } else if(strcmp(s, "D|M")){
-        id = COMP_D_OR_M;
+
+    // Handle a = 0 computations
+    if (strcmp(s, "0") == 0) { id = COMP_0; }
+    else if (strcmp(s, "1") == 0) { id = COMP_1; }
+    else if (strcmp(s, "-1") == 0) { id = COMP_NEGATIVE_1; }
+    else if (strcmp(s, "D") == 0) { id = COMP_D; }
+    else if (strcmp(s, "A") == 0) { id = COMP_A; }
+    else if (strcmp(s, "!D") == 0) { id = COMP_NOT_D; }
+    else if (strcmp(s, "!A") == 0) { id = COMP_NOT_A; }
+    else if (strcmp(s, "-D") == 0) { id = COMP_NEGATIVE_D; }
+    else if (strcmp(s, "-A") == 0) { id = COMP_NEGATIVE_A; }
+    else if (strcmp(s, "D+1") == 0) { id = COMP_D_PLUS_1; }
+    else if (strcmp(s, "A+1") == 0) { id = COMP_A_PLUS_1; }
+    else if (strcmp(s, "D-1") == 0) { id = COMP_D_MINUS_1; }
+    else if (strcmp(s, "A-1") == 0) { id = COMP_A_MINUS_1; }
+    else if (strcmp(s, "D+A") == 0) { id = COMP_D_PLUS_A; }
+    else if (strcmp(s, "D-A") == 0) { id = COMP_D_MINUS_A; }
+    else if (strcmp(s, "A-D") == 0) { id = COMP_A_MINUS_D; }
+    else if (strcmp(s, "D&A") == 0) { id = COMP_D_AND_A; }
+    else if (strcmp(s, "D|A") == 0) { id = COMP_D_OR_A; }
+
+    // Handle a = 1 computations
+    else if (strcmp(s, "M") == 0) { id = COMP_M; *a = 1; }
+    else if (strcmp(s, "!M") == 0) { id = COMP_NOT_M; *a = 1; }
+    else if (strcmp(s, "-M") == 0) { id = COMP_NEGATIVE_M; *a = 1; }
+    else if (strcmp(s, "M+1") == 0) { id = COMP_M_PLUS_1; *a = 1; }
+    else if (strcmp(s, "M-1") == 0) { id = COMP_M_MINUS_1; *a = 1; }
+    else if (strcmp(s, "D+M") == 0) { id = COMP_D_PLUS_M; *a = 1; }
+    else if (strcmp(s, "D-M") == 0) { id = COMP_D_MINUS_M; *a = 1; }
+    else if (strcmp(s, "M-D") == 0) { id = COMP_M_MINUS_D; *a = 1; }
+    else if (strcmp(s, "D&M") == 0) { id = COMP_D_AND_M; *a = 1; }
+    else if (strcmp(s, "D|M") == 0) { id = COMP_D_OR_M; *a = 1; }
+
+    // If no match, log an error and return COMP_INVALID
+    if (id == COMP_INVALID) {
+        printf("ERROR: Invalid computation string '%s'\n", s);
     }
     return id;
 }
-
 #endif

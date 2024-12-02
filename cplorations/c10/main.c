@@ -7,6 +7,7 @@
  ****************************************/
 #include "parser.h"
 
+#define MAX_INSTRUCTION_COUNT 30000
 int main(int argc, const char *argv[])
 {		
 
@@ -23,10 +24,12 @@ int main(int argc, const char *argv[])
     perror("Unabled to open file!");
     exit(EXIT_FAILURE);
     }
-    
-    parse(fin);
-    symtable_print_labels();
+    instruction *instructions = malloc(MAX_INSTRUCTION_COUNT * sizeof(instruction));
+    int num_instructions;
+    num_instructions = parse(fin, instructions);
+    //symtable_print_labels();
     fclose(fin);
+    free(instructions);
 }
 
 
