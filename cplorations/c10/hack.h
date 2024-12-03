@@ -2,7 +2,6 @@
 #define NUM_PREDEFINED_SYMBOLS 23
 
 #include <stdint.h>
-//#include <stdio.h> //for debugging
 #include <string.h>
 typedef enum{
     SYM_R0 = 0,

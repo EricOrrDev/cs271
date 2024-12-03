@@ -236,10 +236,15 @@ void parse_C_instruction(char* line, c_instruction *instr){
 
 opcode instruction_to_opcode(c_instruction instr){
     opcode op = 0;
+    //111
     op |= (7 << 13);
+    //111a
     op |= (instr.a << 12);
+    //111a cccc cc
     op |= (instr.comp << 6);
+    //111a cccc ccdd d
     op |= (instr.dest << 3);
+    //111a cccc ccdd djjj
     op |= (instr.jump << 0);
     return op;
 }
@@ -248,7 +253,12 @@ void assemble(const char * file_name, instruction* instructions, int num_instruc
     const char* suffix = ".hack";
     int lastVariableIndex = 16;
     
-    FILE* fin = fopen( file_name, "w");
+    FILE* fileIN = fopen( file_name, "r");
+    size_t len = strlen(file_name) + strlen(suffix) + 1;
+    char* output_file_name = malloc(len * sizeof(char)); 
+    strcpy(output_file_name, file_name);
+    strcat(output_file_name, suffix);
+    FILE* fileOUT = fopen( output_file_name,"w");
     
     for(int i = 0; i < num_instructions; i++){
         opcode operationCode;
@@ -268,7 +278,7 @@ void assemble(const char * file_name, instruction* instructions, int num_instruc
                     symbol = symtable_find(instructions[i].instr.a_instr.a_inst_data.label);
                     operationCode = symbol->address;
                 }
-                free(instructions[i].instr.a_instr.a_inst_data.label);
+                //free(instructions[i].instr.a_instr.a_inst_data.label);
             } else{
                 //if A type and address
                 operationCode = instructions[i].instr.a_instr.a_inst_data.address;
@@ -279,11 +289,13 @@ void assemble(const char * file_name, instruction* instructions, int num_instruc
             //look up opcode
             operationCode = instruction_to_opcode(instructions[i].instr.c_instr);
         }
-        fprintf("%c", OPCODE_TO_BINARY(operationCode));
+        //pretty sure this is incorrect
+        fprintf(fileOUT, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(operationCode));
     }
     
-    printf("DEBUG - parser.c assemble: assembling %s complete", file_name);
-    fclose(fin);
+    //printf("DEBUG - parser.c assemble: assembling %s complete\n", file_name);
+    fclose(fileIN);
+    fclose(fileOUT);
 }
 #endif
 

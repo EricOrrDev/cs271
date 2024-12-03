@@ -2,7 +2,6 @@
 #define NUM_PREDEFINED_SYMBOLS 23
 
 #include <stdint.h>
-//#include <stdio.h> //for debugging
 #include <string.h>
 
 #define OPCODE_TO_BINARY(opcode) \
@@ -14,11 +13,9 @@
     (opcode & 0x0400 ? '1' : '0'), \
     (opcode & 0x0200 ? '1' : '0'), \
     (opcode & 0x0100 ? '1' : '0'), \
-    (opcode & 0x0100 ? '1' : '0'), \
     (opcode & 0x0080 ? '1' : '0'), \
     (opcode & 0x0040 ? '1' : '0'), \
     (opcode & 0x0020 ? '1' : '0'), \
-    (opcode & 0x0010 ? '1' : '0'), \
     (opcode & 0x0010 ? '1' : '0'), \
     (opcode & 0x0008 ? '1' : '0'), \
     (opcode & 0x0004 ? '1' : '0'), \
