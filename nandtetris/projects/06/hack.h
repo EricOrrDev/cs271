@@ -186,7 +186,6 @@ static inline dest_id str_to_destid(const char* s){
 }
 
 static inline comp_id str_to_compid(const char* s, int *a) {
-    //printf("DEBUG: Processing comp string: '%s'\n", s);
     *a = 0; // Default to 0 (A-based computation)
     comp_id id = COMP_INVALID;
 
@@ -222,10 +221,6 @@ static inline comp_id str_to_compid(const char* s, int *a) {
     else if (strcmp(s, "D&M") == 0) { id = COMP_D_AND_M; *a = 1; }
     else if (strcmp(s, "D|M") == 0) { id = COMP_D_OR_M; *a = 1; }
 
-    // If no match, log an error and return COMP_INVALID
-    if (id == COMP_INVALID) {
-        printf("ERROR: Invalid computation string '%s'\n", s);
-    }
     return id;
 }
 #endif
