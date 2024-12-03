@@ -29,7 +29,7 @@ int main(int argc, const char *argv[])
     num_instructions = parse(fin, instructions);
     //symtable_print_labels();
     fclose(fin);
-    //assemble(argv[1], instructions, num_instructions);
+    assemble(argv[1], instructions, num_instructions);
     free(instructions);
 }
 
