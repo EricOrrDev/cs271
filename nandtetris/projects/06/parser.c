@@ -85,10 +85,10 @@ int parse(FILE *file, instruction* instructions) {
 
             if(instr.instr.a_instr.is_addr){
             //if address print the address
-            printf("A: %d\n", instr.instr.a_instr.a_inst_data.address);
+            //printf("A: %d\n", instr.instr.a_instr.a_inst_data.address);
             } else {
             //else print label
-            printf("A: %s\n", instr.instr.a_instr.a_inst_data.label);
+            //printf("A: %s\n", instr.instr.a_instr.a_inst_data.label);
             }
         } else if (is_Ctype(line)) {
             char tmp_line[MAX_LINE_LENGTH];
@@ -105,11 +105,6 @@ int parse(FILE *file, instruction* instructions) {
             if(instr.instr.c_instr.comp == COMP_INVALID){
                 exit_program(EXIT_INVALID_C_COMP, line_number, line);
             }
-
-            int d = instr.instr.c_instr.dest;
-            int c = instr.instr.c_instr.comp;
-            int j = instr.instr.c_instr.jump;
-            printf("C: d=%d, c=%d, j=%d\n", d, c, j);
         }
 
         instructions[instruction_number++] = instr;
