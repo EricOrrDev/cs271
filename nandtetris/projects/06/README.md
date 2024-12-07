@@ -30,10 +30,10 @@ The Hack Assembler translates Hack Assembly Language (as specified in the [nand2
 ## Usage
 
 ### Command Syntax
-./main <input-file.asm>
+    ./main <input-file.asm>
 
 ### Example
-./main asm/Max.asm
+    ./main asm/Max.asm
 
 ### Output
 The assembler will generate a file named Max.asm.hack, in the asm folder, containing the binary instructions.
